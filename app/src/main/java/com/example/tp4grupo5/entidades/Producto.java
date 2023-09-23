@@ -52,12 +52,11 @@ public class Producto {
 
     @Override
     public String toString() {
-        return "Producto{" +
-                "id='" + id + '\'' +
-                ", nombre='" + nombre + '\'' +
-                ", stock=" + stock +
-                ", categoria_id='" + categoria_id + '\'' +
-                ", estado=" + estado +
-                '}';
+        return
+                id + '\n' +
+                nombre + '\n' +
+                categoria_id +'\n'+
+                stock +'\n'+
+                estado;
     }
 }
