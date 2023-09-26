@@ -1,6 +1,12 @@
 <resources>
-    <string name="app_name">Tp4Grupo5</string>
+    <string name="app_name">TP4</string>
     <string name="altaTitulo">ALTA</string>
     <string name="modificacionTitulo">MODIFICACIÓN</string>
     <string name="listadoTitulo">LISTADO</string>
+
+    <string name="btnBuscar">BUSCAR</string>
+    <string name="btnModificar">MODIFICAR</string>
+    <string name="txtId">ID</string>
+
+
 </resources>

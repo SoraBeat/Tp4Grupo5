@@ -24,18 +24,15 @@ import java.util.concurrent.ExecutionException;
 public class MainActivity extends AppCompatActivity {
     TabLayout tabLayout;
     ViewPager viewPager;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         viewPager = findViewById(R.id.viewPager);
         tabLayout = findViewById(R.id.tabLayout);
-
+        getSupportActionBar().setElevation(0);
         loadViewPager();
-
     }
-
     private void loadViewPager() {
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         // Agrega tus fragmentos al adaptador viewPagerAdapter aquí

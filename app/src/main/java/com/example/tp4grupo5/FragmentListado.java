@@ -23,7 +23,12 @@ import java.util.concurrent.CompletableFuture;
 public class FragmentListado extends Fragment {
     View view;
     ListView lvList;
-
+    public void setUserVisibleHint(boolean isVisibleToUser){
+        super.setUserVisibleHint(isVisibleToUser);
+        if(isVisibleToUser){
+            ActualizarProductos();
+        }
+    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -69,6 +74,8 @@ public class FragmentListado extends Fragment {
                 GestorProductos gp = new GestorProductos();
                 gp.actualizarProducto(producto);
 
+                ActualizarProductos();
+
                 // Actualizar la lista de productos en el adaptador
                 ProductoAdapter adapter = (ProductoAdapter) lvList.getAdapter();
                 adapter.notifyDataSetChanged();
@@ -84,4 +91,28 @@ public class FragmentListado extends Fragment {
 
         builder.show();
     }
+
+    public void ActualizarProductos(){
+        // Crear una instancia de GestorProductos
+        GestorProductos gestorProductos = new GestorProductos();
+        // Obtener la lista de todos los productos
+        CompletableFuture<List<Producto>> futureProductos = gestorProductos.obtenerTodosLosProductos();
+
+        futureProductos.thenAccept(productos -> {
+            // Crear un adaptador personalizado
+            ProductoAdapter adapter = new ProductoAdapter(requireContext(), productos);
+
+            // Configurar el ListView para usar el adaptador personalizado
+            lvList.setAdapter(adapter);
+
+            // Agregar un clic a los elementos de la lista
+            lvList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    mostrarDialogoConfirmacion(productos.get(position));
+                }
+            });
+        });
+    }
+
 }

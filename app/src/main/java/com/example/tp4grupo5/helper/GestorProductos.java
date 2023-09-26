@@ -48,9 +48,37 @@ public class GestorProductos {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Producto producto = snapshot.getValue(Producto.class);
-                    productos.add(producto);
+                    if(producto.isEstado())
+                    {
+                        productos.add(producto);
+                    }
                 }
                 future.complete(productos); // Completa el futuro con la lista de productos cuando se hayan cargado todos los datos.
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Manejar el error si es necesario
+                future.completeExceptionally(databaseError.toException()); // Completa el futuro con una excepción en caso de error.
+            }
+        });
+        return future;
+    }
+    public CompletableFuture<Producto> obtenerProductoPorId(String idProducto) {
+        final CompletableFuture<Producto> future = new CompletableFuture<>();
+
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Producto producto = snapshot.getValue(Producto.class);
+                    if (producto != null && producto.getId().equals(idProducto)) {
+                        future.complete(producto);
+                        return; // Termina la búsqueda una vez que se encuentra el producto.
+                    }
+                }
+                // Si no se encuentra el producto, completa el futuro con null.
+                future.complete(null);
             }
 
             @Override
@@ -62,5 +90,7 @@ public class GestorProductos {
 
         return future;
     }
+
+
 }
 

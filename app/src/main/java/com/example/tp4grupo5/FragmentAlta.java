@@ -94,9 +94,10 @@ public class FragmentAlta extends Fragment {
         EditText etNombre = view.findViewById(R.id.et_createNombre);
         EditText etStock = view.findViewById(R.id.et_createStock);
         Spinner spinnerCategoria = view.findViewById(R.id.s_createCategoria);
+        GestorProductos gestorProductos = new GestorProductos();
 
         //Obtengolos valores de los controles
-        String id = etId.getText().toString();
+        String id =  etId.getText().toString();
         String nombre = etNombre.getText().toString();
         int stock = (etStock.getText().toString().equals("")) ? 0 : Integer.parseInt(etStock.getText().toString());
         ItemSpinner selectedCategoria = (ItemSpinner) spinnerCategoria.getSelectedItem();
@@ -104,36 +105,46 @@ public class FragmentAlta extends Fragment {
         //Validaciones
         Pattern patronSinNumeros = Pattern.compile(".*\\d.*");
 
-        if(id.equals("")){
-            Toast.makeText(requireContext(),"ID requerido",Toast.LENGTH_LONG).show();
-            return;
-        }else if(nombre.equals("")){
-            Toast.makeText(requireContext(),"Nombre requerido",Toast.LENGTH_LONG).show();
-            return;
-        }
-        else if(patronSinNumeros.matcher(nombre).matches()){
-            Toast.makeText(requireContext(),"Nombre no debe contener numeros",Toast.LENGTH_LONG).show();
-            return;
-        }
-        else if(stock<=0){
-            Toast.makeText(requireContext(),"Stock requerido",Toast.LENGTH_LONG).show();
-            return;
-        }
+        gestorProductos.obtenerProductoPorId(id).thenAccept(p ->
+        {
+            if (p == null)
+            {
+                if(id.equals("")){
+                    Toast.makeText(requireContext(),"ID requerido",Toast.LENGTH_LONG).show();
+                    return;
+                }else if(nombre.equals("")){
+                    Toast.makeText(requireContext(),"Nombre requerido",Toast.LENGTH_LONG).show();
+                    return;
+                }
+                else if(patronSinNumeros.matcher(nombre).matches()){
+                    Toast.makeText(requireContext(),"Nombre no debe contener numeros",Toast.LENGTH_LONG).show();
+                    return;
+                }
+                else if(stock<=0){
+                    Toast.makeText(requireContext(),"Stock requerido",Toast.LENGTH_LONG).show();
+                    return;
+                }
 
-        // Guardar datos
-        GestorProductos gestorProductos = new GestorProductos();
-        Producto producto = new Producto();
-        producto.setId(id);
-        producto.setNombre(nombre);
-        producto.setStock(stock);
-        producto.setCategoria_id(categoriaId);
-        producto.setEstado(true);
-        gestorProductos.agregarProducto(producto);
-        Toast.makeText(requireContext(),"Producto creado",Toast.LENGTH_LONG).show();
+                // Guardar datos
 
-        //Reiniciar campos
-        etId.setText("");
-        etNombre.setText("");
-        etStock.setText("");
+                Producto producto = new Producto();
+                producto.setId(id);
+                producto.setNombre(nombre);
+                producto.setStock(stock);
+                producto.setCategoria_id(categoriaId);
+                producto.setEstado(true);
+                gestorProductos.agregarProducto(producto);
+                Toast.makeText(requireContext(),"Producto creado",Toast.LENGTH_LONG).show();
+
+                //Reiniciar campos
+                etId.setText("");
+                etNombre.setText("");
+                etStock.setText("");
+            }
+            else {
+                Toast.makeText(requireContext(),"Id ya existente",Toast.LENGTH_LONG).show();
+                return;
+            }
+        });
     }
 }
